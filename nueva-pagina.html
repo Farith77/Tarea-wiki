@@ -7,13 +7,18 @@
 <body>
 	<h1 align="center"> Crea tu pagina </h1>
 	<div align="center">
-		<h3>
-		<input type="text" class="nin" placeholder="Escriba aqui su titulo" name="texto">
-		</h3>
-		</br>
-        <textarea placeholder="Escriba aqui su texto" name="textarea" rows="20" cols="70"></textarea>
-		</br>
-        <button type="button" >Enviar</button><p></p>
+		<form action="./cgi-bin/createWP.pl" method="post">
+			<h3>
+			<input type="text" class="nin" placeholder="Escriba aqui su titulo" name="fileName">
+			</h3>
+			</br>
+			<textarea placeholder="Escriba aqui su texto"  name="txtA" rows="20" cols="70"></textarea>
+			<div class="nextbotc">
+                <input type="submit" value="Save code" class="buttonNH">
+                <input type="button" value="Cancel" onclick="location.href='index.html'" class="buttonNH">
+                <input type="button" value="Save and show" onclick="location.href='#'" class="buttonNH">
+            </div>
+		</form>
 	</div>
 	<a href="index.html"> Inicio </a>
 </body>
