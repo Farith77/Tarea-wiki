@@ -1,62 +1,58 @@
 #!F:\Aplicaciones\xampp\perl\bin\perl.exe
-
 use strict;
-use warnings;
-use CGI;
-
-my $q = CGI->new;
-my $fileName = $q->param('fileName');
-
-my $line;
-
-print $q->header('text/html');
-print <<HTML;
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/estilosNH.css">
-    <title>Wiki</title>
-</head>
-
-<body>
-    <section class="cuerpo">
-        <h2>Creating a new Web Page</h2>
-        <form action="./createWP.pl" method="post">
-            <div class="content">
-                <h4>
-                    Type a title:
-                </h4>
-                <input type="text" name="fileName" class="cajaTitulo" value="$fileName" required readonly>
-                <h4>
-                    Type the content with Markdown format:
-                </h4>
-                <textarea name="txtA" class="cajaContent" required>
-HTML
-
-open(FILE, "../markdownFiles/".$fileName.".md") or die "Error";
-while($line = <FILE>){
-    print $line;
+use CGI ':standard';
+use DBI;
+my $nombre = param('nombre');
+##abrir la carpeta
+my $dir = "../subwiki";
+opendir DIR,$dir; 
+##declarando las variables
+my $prueba;
+my $title;
+my @dir = readdir(DIR); 
+close DIR; 
+##buscador del nombre del archivo
+foreach(@dir){
+if($_ eq ".")	{}
+elsif($_ eq ".."){}
+elsif($_ eq $nombre){
+$prueba=&listado;
+$title=$nombre;
 }
-close(FILE);
-
-print <<HTML;
-                </textarea>
-                <div class="nextbotc">
-                    <input type="submit" value="Save code" class="buttonNH">
-                    <input type="button" value="Atras" onclick="location.href='show.pl'" class="buttonNH">
-                    <input type="button" value="Save and show" onclick="location.href='#'" class="buttonNH">
-                </div>
-            </div>
-        </form>
-    </section>
-
+else{}
+}
+##metodo de extracion de datos
+sub listado{
+	open(ARCHIVO,'<',"../subwiki/$nombre");
+	while(<ARCHIVO>)               
+	{        
+	$prueba=$prueba.$_;                  
+	}   
+	close(ARCHIVO);
+	return $prueba;
+}
+##imprimir html
+print "Content-type: text/html\n\n";
+print <<ENDHTML;
+<html>
+<head>
+ 	<!-- La cabecera -->
+	<meta charset="utf-8"> 	
+	<title>Wiki</title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+<h1>Nuestras paginas </h1>
+	<form method=GET action="./new.pl">
+			<h4> $title</h4> 
+			<input type=hidden name=titulo size=30 maxlength=30 value=$title style="height: 30px;">
+			<input type=hidden name=edit size=30 maxlength=30 value="true" style="height: 30px;">
+			<br>
+			<textarea name=contenido rows="20" cols="60" >$prueba</textarea>
+			<br>
+			<input type=submit value="editar" style="height: 30px;">
+			</form>
+			<h4><a href="list.pl">Cancelar</a></h4>
 </body>
-
 </html>
-HTML
-
-exit;
+ENDHTML

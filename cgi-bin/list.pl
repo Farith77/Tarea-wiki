@@ -2,7 +2,7 @@
 use strict;
 use CGI ':standard';
 use DBI;
-my $nombre = param('nombre');
+
 ##abrir las carpetas
 my $dir = "../subwiki";
 opendir DIR,$dir; 
@@ -12,10 +12,22 @@ close DIR;
 foreach(@dir){
 if($_ eq ".")	{}
 elsif($_ eq ".."){}
-elsif($_ eq $nombre){
-	unlink("../subwiki/$nombre");
-	$prueba=$nombre." eliminado"}
-else{}
+else{	
+$prueba=$prueba.'<h4>'.$_ .'
+	<form method=GET action="./view.pl">
+		<input type=submit value="ver"">
+		<input type=hidden name=nombre value='.$_ .'>
+	</form>
+	<form method=GET action="./edit.pl">
+		<input type=submit value="E"">
+		<input type=hidden name=nombre value='.$_ .'>
+	</form>
+	<form method=GET action="./delete.pl">
+		<input type=submit value="X">
+		<input type=hidden name=nombre value='.$_ .'>
+	</form>
+	</h4>
+<br>'; }
  }
 
 ##imprimir html
@@ -23,7 +35,7 @@ print "Content-type: text/html\n\n";
 print <<ENDHTML;
 <html>
 <head>
- 	<!-- La cabecera  -->
+ 	<!-- La cabecera -->
 	<meta charset="utf-8"> 	
 	<title>Wiki</title>
 	<link rel="stylesheet" type="text/css" href="index.css">
@@ -31,7 +43,7 @@ print <<ENDHTML;
 <body>
 <h1>Nuestras paginas </h1>
 $prueba
-<h4><a href="list.pl">Salir</a></h4>
+<a href="../index.html">regresar al pricipio</a>
 </body>
 </html>
 ENDHTML
